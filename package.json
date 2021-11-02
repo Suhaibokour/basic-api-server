@@ -7,7 +7,7 @@
     "start": "node index.js",
     "test": "NODE_ENV=test jest --coverage --verbose",
     "dev": "nodemon index.js",
-    "init":"sequelize db:create"
+    "init": "sequelize db:create"
   },
   "repository": {
     "type": "git",
@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/Suhaibokour/basic-api-server#readme",
   "dependencies": {
+    "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "jest": "^27.3.1",
