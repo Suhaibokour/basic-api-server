@@ -1,10 +1,18 @@
-// 'use strict';
+'use strict'
+module.exports = function (req, res, next) {
+    
+    if (req.query.name) {
+       console.log((req.query.name).toString())
+       next();
+   }
+    else if (req.query.name === undefined||null) {
+     next('please enter a name');
 
-// module.exports = ( req,res,next )=>{
-//   if( req.query.name ){
-//     next();
-//   }
-//   else {
-//     next( 'not a number >:(' );
-//   }
-// };
+    }
+
+    else {next('opps !! something went wrong ')  }
+
+
+
+
+}

@@ -1,26 +1,29 @@
 'use strict';
+const loggerMiddleware = require('../src/middleware/logger');
 
-const logger = require( '../src/middleware/logger.js' );
+describe('Logger Middleware', () => {
 
-describe( 'logger middleware', () => {
   let consoleSpy;
-  const req = { method: 'get', path: 'test' };
-  const res = {};
-  const next = jest.fn();
+  let req = {}; 
+  let res = {}; 
+  let next = jest.fn(); 
 
-  beforeEach( () => {
-    consoleSpy = jest.spyOn( console, 'log' );
-  } );
+  beforeEach(() => {
+    consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+  });
 
-  afterEach( () => {
+  afterEach(() => {
     consoleSpy.mockRestore();
-  } );
+  });
 
-  it( 'should log all get requests', () => {
-    
-    logger( req, res, next );
-    
-    expect( consoleSpy ).toHaveBeenCalledWith( '##request info##', 'get', 'test' );
-    expect( next ).toHaveBeenCalledWith();
-  } );
-} );
+  test('logging in', () => {
+    loggerMiddleware(req, res, next);
+    expect(consoleSpy).toHaveBeenCalled();
+  });
+
+  test('check if properly moved to the next middleware', () => {
+    loggerMiddleware(req, res, next);
+    expect(next).toHaveBeenCalled();
+  });
+
+});
