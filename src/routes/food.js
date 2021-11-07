@@ -1,43 +1,51 @@
 'use strict';
 
-const express = require( 'express' );
+const express = require('express');
+const { food } = require('../models/index');
+const foodRouter = express.Router();
 
-const Food = require( '../models/food.js' );
 
-const food = new Food();
-const router = express.Router();
+foodRouter.get('/food', getFood); 
+foodRouter.get('/food/:id', getOneFoodItem); 
+foodRouter.post('/food', nameFood); 
+foodRouter.put('/food/:id', updateFood); 
+foodRouter.delete('/food/:id', deleteFood); 
 
-router.get( '/', getFood );
-router.get( '/:id', getFoodWithId );
-router.post( '/', createFood );
-router.put( '/:id', updateFood );
-router.delete( '/:id', deleteFood );
 
-function deleteFood( req, res ) {
-  const resObj = food.delete( req.params.id );
-  res.json( resObj );
+async function getFood(req, res) {
+  const allFood = await food.findAll();
+  res.status(200).json(allFood);
+
 }
 
-function updateFood( req, res ) {
-  const foodObj = req.body;
-  const resObj = food.update( req.params.id, foodObj );
-  res.json( resObj );
+async function getOneFoodItem(req, res) {
+  const id = parseInt(req.params.id); 
+  const foods = await food.findOne({
+    where: {
+      id: id
+    }
+  });
+  res.status(200).json(foods);
 }
 
-function createFood( req, res ) {
-  const foodObj = req.body;
-  const resObj = food.create( foodObj );
-  res.status( 201 ).json( resObj );
+async function nameFood(req, res) {
+  const obj = req.body;
+  let foods = await food.create(obj);
+  res.status(201).json(foods);
+
+}
+async function updateFood(req, res) {
+  const id = parseInt(req.params.id);
+  const obj = req.body;
+  let foundFood = await food.findOne({ where: { id: id } });
+  const updatedFood = await foundFood.update(obj);
+  res.status(201).json(updateFood);
+}
+async function deleteFood(req, res) {
+  const id = parseInt(req.params.id);
+  const deletedFood = await food.destroy({ where: { id } });
+  res.status(204).json(deleteFood);
 }
 
-function getFood( req, res ) {
-  const resObj = food.read();
-  res.json( resObj );
-}
 
-function getFoodWithId( req, res ) {
-  const resObj = food.read( req.params.id );
-  res.json( resObj );
-}
-
-module.exports = router;
+module.exports = foodRouter;
